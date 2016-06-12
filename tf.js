@@ -4,6 +4,8 @@
  * 
  ************************************************************/
 
+prompt = require("prompt");
+
 var BOARD = [
 	-1,
 	-1,
@@ -133,7 +135,6 @@ var PIECES = [
 ]
 
 
-
 function run () {
 
     console.log("TRAFFIC JAM");
@@ -141,11 +142,27 @@ function run () {
     place_piece_by_name("X",2,2,0);
     place_piece_by_name("A",4,2,1);
     place_piece_by_name("P",5,1,1);
+
+    prompt.start()
+    loop ()
+}
+
+function loop () {
     print_board();
-    move_piece("A",2);
-    print_board();
-    move_piece("P",2)
-    print_board();
+    if (done()) {
+	console.log("CONGRATULATIONS");
+	return;
+    }
+    /// check if done
+    prompt.get(["piece", "delta"],function(err,result) {
+	if (piece_index(result.piece) > -1) {
+	    move_piece(result.piece,+result.delta);
+	    loop();
+	} else {
+	    console.log("Unrecognized input");
+	    loop();
+	}
+    });
 }
 
 function initialize_board () {
@@ -160,9 +177,12 @@ function position (x,y) {
 
 function xy_position (position) {
 
-    var x = position % 6;
-    var y = (position - x) / 6;
-    return [x,y];
+    if (position > -1) {
+	var x = position % 6;
+	var y = (position - x) / 6;
+	return [x,y];
+    }
+    return 0;
 }
 
 function place_piece_by_name (name,x,y,orientation) {
@@ -176,6 +196,19 @@ function piece_index (name) {
 	    return i;
 	}
     }
+    return -1;
+}
+
+function done () {
+    var index = piece_index("X");
+    var xy = xy_position(PIECES[index].position);
+    if (xy && xy[1] === 2) {
+	// we're done if the range of the X piece
+	// goes all the way to the exit!
+	var r = piece_range(index);
+	return r[1] === 5;
+    }
+    return false;
 }
     
 function place_piece (index,x,y,orientation) {
