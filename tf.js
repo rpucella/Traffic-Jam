@@ -139,9 +139,11 @@ function run () {
 
     console.log("TRAFFIC JAM");
     initialize_board();
-    place_piece_by_name("X",2,2,0);
-    place_piece_by_name("A",4,2,1);
-    place_piece_by_name("P",5,1,1);
+//    place_piece_by_name("X",2,2,0);
+//    place_piece_by_name("A",4,2,1);
+//    place_piece_by_name("P",5,1,1);
+
+    process_puzzle(SAMPLE2);
 
     prompt.start()
     loop ()
@@ -159,6 +161,15 @@ function loop () {
 	    move_piece(result.piece,+result.delta);
 	    loop();
 	} else {
+	    if (result.piece.trim() === "#" ||
+		result.delta.trim() === "#") {
+		return;
+	    }
+	    if (result.piece.trim() === "?" ||
+		result.delta.trim() === "?") {
+		solve_puzzle();
+		return;
+	    }
 	    console.log("Unrecognized input");
 	    loop();
 	}
@@ -202,11 +213,12 @@ function piece_index (name) {
 function done () {
     var index = piece_index("X");
     var xy = xy_position(PIECES[index].position);
+    ///console.log("index = ",index,"xy = ",xy);
     if (xy && xy[1] === 2) {
 	// we're done if the range of the X piece
 	// goes all the way to the exit!
 	var r = piece_range(index);
-	return r[1] === 5;
+	return r[1] === 4;
     }
     return false;
 }
@@ -222,6 +234,17 @@ function place_piece (index,x,y,orientation) {
     }
 }
 
+function place_piece_by_position (index,position,orientation) {
+    PIECES[index].position = position;
+    PIECES[index].orientation = orientation;
+    var step = orientation ? 6 : 1;
+    for (var i=0; i<PIECES[index].size; i++) {
+	pos = position + i * step;
+	BOARD[pos] = index;
+    }
+}
+    
+
 function clear_piece (index) {
     var orientation = PIECES[index].orientation;
     var position = PIECES[index].position;
@@ -230,6 +253,16 @@ function clear_piece (index) {
     PIECES[index].orientation = -1;
     for (var i=0; i<PIECES[index].size; i++) {
 	BOARD[position+i*step] = -1;
+    }
+}
+
+function clear_board () {
+    for (var i=0; i<BOARD.length; i++) {
+	BOARD[i] = -1
+    }
+    for (var i=0; i<PIECES.length; i++) {
+	PIECES[i].position = -1;
+	PIECES[i].orientation = -1;
     }
 }
     
@@ -291,8 +324,8 @@ function piece_range (index) {
 	    }
 	    ///console.log("yes");
 	}
-	if (mx > 5) {
-	    mx = 5;
+	if (mx > 6-PIECES[index].size) {
+	    mx = 6-PIECES[index].size;;
 	}
 	return [mn,mx];
     }
@@ -313,8 +346,8 @@ function piece_range (index) {
 		break;
 	    }
 	}
-	if (mx > 5) {
-	    mx = 5;
+	if (mx > 6-PIECES[index].size) {
+	    mx = 6-PIECES[index].size;
 	}
 	return [mn,mx];
     }
@@ -356,6 +389,108 @@ function move_piece (name,d) {
 	    place_piece(index,x,y+d,orientation);
 	}
     }
+}
+
+var SAMPLE1 = "X23r:A24r:B25d:C36r:O43d:P64d";
+var SAMPLE2 = "A21d:B31r:C51d:D61d:E42d:F63d:I34r:H45d:X23r";
+
+function process_puzzle (descr) {
+    descr.split(":").forEach(function(entry) {
+	if (entry.length == 4) {
+	    place_piece_by_name(entry[0],
+				+entry[1]-1,
+				+entry[2]-1,
+				entry[3]==="r" ? 0 : 1);
+	}
+    });
+}
+
+function solve_puzzle () {
+
+    var q = [[board_string()]];
+
+    var seen = {};
+
+    while (q.length > 0) {
+	///console.log(q.length);
+	path = q.shift();
+	current = path[0];
+	if (current in seen) {
+	    continue;
+	}
+	recreate_board(current);
+	if (done()) {
+	    console.log("SOLUTION:");
+	    for (var i=path.length; i>0; i--) {
+		recreate_board(path[i-1]);
+		print_board();
+		console.log("");
+	    }
+	    return;
+	}
+	seen[current] = true;
+	moves = all_moves();
+	moves.forEach(function(move) {
+	    move_piece(move[0],move[1]);
+	    q.push([board_string()].concat(path))
+	    recreate_board(current); });
+    }
+
+    console.log("No solution found");
+    
+}
+
+function board_string () {
+    var string = "";
+    PIECES
+	.forEach(function(p,i) {
+	    if (p.position > -1) {
+		string += ("0"+i).slice(-2) + ("0"+p.position).slice(-2) + p.orientation; } });
+    ///console.log(string);
+    return string;
+}
+
+function recreate_board (string) {
+    clear_board();
+    ///console.log("string",string);
+    for (var i=0; i<string.length; i+=5) {
+	///console.log("i",i,"string",string.slice(i,i+5));
+	place_piece_by_position(+string.slice(i,i+2),
+				+string.slice(i+2,i+4),
+				+string.slice(i+4,i+5));
+    }
+    ///print_board();
+}
+
+function all_moves () {
+    moves = [];
+    PIECES
+	.forEach(function(p,index) {
+	    ///console.log("index",index);
+	    if (p.position > -1) {
+		var r = piece_range(index);
+		var xy = xy_position(p.position);
+		var x = xy[0], y = xy[1];
+		///console.log("piece",p.name,"x",x,"y",y,"orientation",p.orientation);
+		///console.log("range",r);
+		if (p.orientation) {
+		    ///console.log("orientation D");
+		    for (var i=r[0]-y; i<r[1]+1-y; i++) {
+			if (i) {
+			    moves.push([p.name,i]);
+			}
+		    }
+		} else {
+		    ///console.log("orientation R");
+		    for (var i=r[0]-x; i<r[1]+1-x; i++) {
+			if (i) {
+			    moves.push([p.name,i]);
+			}
+		    }
+		}
+	    } });
+    ///console.log(moves);
+    return moves;
 }
 
 run();

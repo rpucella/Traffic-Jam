@@ -10,5 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "prompt": "^1.0.0"
-  }
+  },
+    "scripts": {
+	"start":"node tf.js"
+    }
 }
