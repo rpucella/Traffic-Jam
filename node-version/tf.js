@@ -134,6 +134,20 @@ var PIECES = [
 
 ]
 
+var SAMPLE1 = "X23r:A24r:B25d:C36r:O43d:P64d";
+var SAMPLE2 = "A21d:B31r:C51d:D61d:E42d:F63d:I34r:H45d:X23r";
+
+var GAMES = [
+    {level:"beginner",
+     code:"A11r:B15d:C55r:O61d:P12d:Q42d:R36r:X23r"},
+    {level:"beginner",
+     code:"A11d:B42d:C53d:D35d:E55r:F16r:G46r:O41r:P62d:Q14r:X13r"},
+    {level:"beginner",
+     code:"A24r:B25d:C36r:O43d:P64d:X23r"},
+    {level:"beginner",
+     code:"A34d:B65d:O11d:P41d:Q44r:R36r:X23r"},
+];
+	    
 
 function run () {
 
@@ -143,7 +157,7 @@ function run () {
 //    place_piece_by_name("A",4,2,1);
 //    place_piece_by_name("P",5,1,1);
 
-    process_puzzle(GAMES[1].code);
+    process_puzzle(GAMES[3].code);
 
     prompt.start()
     loop ()
@@ -390,17 +404,6 @@ function move_piece (name,d) {
 	}
     }
 }
-
-var SAMPLE1 = "X23r:A24r:B25d:C36r:O43d:P64d";
-var SAMPLE2 = "A21d:B31r:C51d:D61d:E42d:F63d:I34r:H45d:X23r";
-
-var GAMES = [
-	     {level:"beginner",
-	      code:"A11r:B15d:C55r:O61d:P12d:Q42d:R36r:X23r"},
-	     {level:"beginner",
-	      code:"A11d:B42d:C53d:D35d:E55r:F16r:G46r:O41r:P62d:Q14r:X13r"}
-	     ];
-	    
 
 function process_puzzle (descr) {
     descr.split(":").forEach(function(entry) {
