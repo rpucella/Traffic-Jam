@@ -158,6 +158,17 @@ var GAMES = [
      code:"A21d:B31r:C51r:D42d:E52r:F63d:G35d:H65d:O53d:P14d:Q24r:X13r"},
     {level:"beginner-10",
      code:"A11r:B31d:C51r:D12r:E45d:F55r:G16r:H56r:O62d:P13d:Q24r:X23r"},
+
+    {level:"intermediate-11",
+     code:"A21r:B34d:E65d:O11d:P41d:Q44r:R36r:X23r"},
+    {level:"intermediate-12",
+     code:"A11d:B21r:C55d:O61d:P32d:Q44r:R16r:X13r"},
+    {level:"intermediate-13",
+     code:"A11r:B31r:C51d:D32d:E23d:F44r:G45d:H55r:I26r:K56r:O62d:P14d:X43r"},
+    {level:"intermediate-14",
+     code:"A11r:B31d:C52r:D13d:E23d:F53d:G63d:H34r:I35d:J55r:K16r:X33r"},
+    {level:"intermediate-15",
+     code:"A21r:B41r:C12r:D32r:E34d:F44d:G55r:H26r:I46r:O52d:P62d:Q13d:R23d:X33r"},
 ];
 	    
 
