@@ -138,26 +138,38 @@ var SAMPLE1 = "X23r:A24r:B25d:C36r:O43d:P64d";
 var SAMPLE2 = "A21d:B31r:C51d:D61d:E42d:F63d:I34r:H45d:X23r";
 
 var GAMES = [
-    {level:"beginner",
+    {level:"beginner-1",
      code:"A11r:B15d:C55r:O61d:P12d:Q42d:R36r:X23r"},
-    {level:"beginner",
+    {level:"beginner-2",
      code:"A11d:B42d:C53d:D35d:E55r:F16r:G46r:O41r:P62d:Q14r:X13r"},
-    {level:"beginner",
+    {level:"beginner-3",
      code:"A24r:B25d:C36r:O43d:P64d:X23r"},
-    {level:"beginner",
+    {level:"beginner-4",
      code:"A34d:B65d:O11d:P41d:Q44r:R36r:X23r"},
+    {level:"beginner-5",
+     code:"A11r:B61d:D15d:E55r:F56r:G63d:O41d:P12d:Q52d:R24r:X23r"},
+    {level:"beginner-6",
+     code:"A11r:B41d:C12r:D14r:E34d:F15d:O52d:P62d:Q43d:R46r:X23r"},
+    {level:"beginner-7",
+     code:"A21d:B31r:C51d:D61d:E42d:F63d:H45d:I34r:X23r"},
+    {level:"beginner-8",
+     code:"A41r:B32r:C52d:D33d:E43d:F14r:G54r:H15r:I35d:K16r:O61d:P45r:Q46r:X13r"},
+    {level:"beginner-9",
+     code:"A21d:B31r:C51r:D42d:E52r:F63d:G35d:H65d:O53d:P14d:Q24r:X13r"},
+    {level:"beginner-10",
+     code:"A11r:B31d:C51r:D12r:E45d:F55r:G16r:H56r:O62d:P13d:Q24r:X23r"},
 ];
 	    
 
 function run () {
 
-    console.log("TRAFFIC JAM");
+    console.log("TRAFFIC JAM\n");
     initialize_board();
 //    place_piece_by_name("X",2,2,0);
 //    place_piece_by_name("A",4,2,1);
 //    place_piece_by_name("P",5,1,1);
 
-    process_puzzle(GAMES[3].code);
+    process_puzzle(GAMES[GAMES.length-1].code);
 
     prompt.start()
     loop ()
@@ -165,6 +177,7 @@ function run () {
 
 function loop () {
     print_board();
+    console.log("");
     if (done()) {
 	console.log("CONGRATULATIONS");
 	return;
