@@ -1,10 +1,4 @@
-/************************************************************
- *
- * Traffic Jam
- * 
- ************************************************************/
 
-prompt = require("prompt");
 
 var BOARD = [
 	-1,
@@ -46,6 +40,11 @@ var BOARD = [
 ]
 
 
+/* position in [0,35]   
+   orientation = 0 -> r , 1 -> d
+   goal = true if piece is the X piece
+ */
+
 var PIECES = [
 
 
@@ -53,128 +52,188 @@ var PIECES = [
       name: "X",
       position: -1,
       orientation: -1,
+      color: "red",
       goal: true },
 
     { size: 2,
       name: "A",
       position: -1,
       orientation: -1,
+      color: "green",
       goal: false },
     { size: 2,
       name: "B",
       position: -1,
       orientation: -1,
+      color: "orange",
       goal: false },
     { size: 2,
       name: "C",
       position: -1,
       orientation: -1,
+      color: "blue",
       goal: false },
     { size: 2,
       name: "D",
       position: -1,
       orientation: -1,
+      color: "pink",
       goal: false },
     { size: 2,
       name: "E",
       position: -1,
       orientation: -1,
+      color: "DarkViolet",
       goal: false },
     { size: 2,
       name: "F",
       position: -1,
       orientation: -1,
+      color: "DarkGreen",
       goal: false },
     { size: 2,
       name: "G",
       position: -1,
       orientation: -1,
+      color: "DarkSlateGrey",
       goal: false },
     { size: 2,
       name: "H",
       position: -1,
       orientation: -1,
+      color: "BurlyWood",
       goal: false },
     { size: 2,
       name: "I",
       position: -1,
       orientation: -1,
+      color: "Yellow",
       goal: false },
     { size: 2,
       name: "J",
       position: -1,
       orientation: -1,
+      color: "Chocolate",
       goal: false },
     { size: 2,
       name: "K",
       position: -1,
       orientation: -1,
+      color: "ForestGreen",
       goal: false },
 
     { size: 3,
       name: "O",
       position: -1,
       orientation: -1,
+      color: "Gold",
       goal: false },
     { size: 3,
       name: "P",
       position: -1,
       orientation: -1,
+      color: "Orchid",
       goal: false },
     { size: 3,
       name: "Q",
       position: -1,
       orientation: -1,
+      color: "MediumBlue",
       goal: false  },
     { size: 3,
       name: "R",
       position: -1,
       orientation: -1,
+      color: "Turquoise",
       goal: false }
-
 ]
 
+var GAMES = [
+    {level:"beginner-1",
+     code:"A11r:B15d:C55r:O61d:P12d:Q42d:R36r:X23r"},
+    {level:"beginner-2",
+     code:"A11d:B42d:C53d:D35d:E55r:F16r:G46r:O41r:P62d:Q14r:X13r"},
+    {level:"beginner-3",
+     code:"A24r:B25d:C36r:O43d:P64d:X23r"},
+    {level:"beginner-4",
+     code:"A34d:B65d:O11d:P41d:Q44r:R36r:X23r"},
+    {level:"beginner-5",
+     code:"A11r:B61d:D15d:E55r:F56r:G63d:O41d:P12d:Q52d:R24r:X23r"},
+    {level:"beginner-6",
+     code:"A11r:B41d:C12r:D14r:E34d:F15d:O52d:P62d:Q43d:R46r:X23r"},
+    {level:"beginner-7",
+     code:"A21d:B31r:C51d:D61d:E42d:F63d:H45d:I34r:X23r"},
+    {level:"beginner-8",
+     code:"A41r:B32r:C52d:D33d:E43d:F14r:G54r:H15r:I35d:K16r:O61d:P45r:Q46r:X13r"},
+    {level:"beginner-9",
+     code:"A21d:B31r:C51r:D42d:E52r:F63d:G35d:H65d:O53d:P14d:Q24r:X13r"},
+    {level:"beginner-10",
+     code:"A11r:B31d:C51r:D12r:E45d:F55r:G16r:H56r:O62d:P13d:Q24r:X23r"},
 
-function run () {
+    {level:"intermediate-11",
+     code:"A21r:B34d:E65d:O11d:P41d:Q44r:R36r:X23r"},
+    {level:"intermediate-12",
+     code:"A11d:B21r:C55d:O61d:P32d:Q44r:R16r:X13r"},
+    {level:"intermediate-13",
+     code:"A11r:B31r:C51d:D32d:E23d:F44r:G45d:H55r:I26r:K56r:O62d:P14d:X43r"},
+    {level:"intermediate-14",
+     code:"A11r:B31d:C52r:D13d:E23d:F53d:G63d:H34r:I35d:J55r:K16r:X33r"},
+    {level:"intermediate-15",
+     code:"A21r:B41r:C12r:D32r:E34d:F44d:G55r:H26r:I46r:O52d:P62d:Q13d:R23d:X33r"},
+    {level:"intermediate-16",
+     code:"A11r:B31r:C51d:D12d:E32r:F23d:G16r:O61d:P33d:Q44r:X43r"},
+    {level:"intermediate-17",
+     code:"A11d:B32r:C52r:D33d:E14r:F55d:G65d:O21r:P44d:Q15r:R16r:X13r"},
+    {level:"intermediate-18",
+     code:"A11r:B31d:C12r:D25r:O41d:P13d:Q24r:R16r:X23r"},
+    {level:"intermediate-19",
+     code:"A31d:B41r:D23d:E34r:F54d:J52d:O25r:X33r"},
+    {level:"intermediate-20",
+     code:"A11d:B22r:C42d:D33d:E35d:F45r:O41r:P63d:Q46r:X13r"},
 
-    console.log("TRAFFIC JAM");
-    initialize_board();
-//    place_piece_by_name("X",2,2,0);
-//    place_piece_by_name("A",4,2,1);
-//    place_piece_by_name("P",5,1,1);
+    {level:"advanced-21",
+     code:"A11r:B31d:O41d:P12d:Q24r:R46r:X23r"},
+    {level:"advanced-22",
+     code:"A31d:B12d:C52r:D24d:E54r:F15d:G35r:H65d:O41r:P42d:Q26r:X23r"},
+    {level:"advanced-23",
+     code:"A32d:B42r:C34d:D44d:E54r:F55r:O31r:P61d:Q36r:X43r"},
+    {level:"advanced-24",
+     code:"A31d:B41r:C22d:D13d:E53d:F24r:G55d:H16r:O15r:X33r"},
+    {level:"advanced-25",
+     code:"A11r:B31d:C51r:D12r:E53d:F25d:G45d:H55r:I56r:O62d:P13d:Q24r:X23r"},
+    {level:"advanced-26",
+     code:"A21d:B12d:C42d:D63d:E14d:F35d:G65d:H46r:O41r:P52d:R24r:X23r"},
+    {level:"advanced-27",
+     code:"A11d:B21r:C22r:D33d:E44r:F35d:O41d:P63d:R46r:X13r"},
+    {level:"advanced-28",
+     code:"A41d:B52r:C14d:D24d:E44r:F16r:G36r:O11r:P32d:Q64d:R35r:X13r"},
+    {level:"advanced-29",
+     code:"A32d:B63d:C14d:D24r:E44r:F25r:G45d:H65d:O11r:P51d:R16r:X13r"},
+    {level:"advanced-30",
+     code:"A31d:B42d:C14r:D34r:E16r:F36r:O11d:P41r:Q64d:X23r"},
 
-    process_puzzle(SAMPLE2);
+    {level:"expert-31",
+     code:"A11r:B42d:C52r:D13d:E44r:F15r:O41r:P63d:Q34d:R46r:X23r"},
+    {level:"expert-32",
+     code:"A11r:B41d:C51r:D14d:E24r:F44r:H16r:K45d:O31d:P64d:X13r"},
+    {level:"expert-33",
+     code:"A21d:B51r:D24r:E44r:F25r:G45d:H55d:I14d:P64d:Q16r:R31d:X13r"},
+    {level:"expert-34",
+     code:"A11d:B42d:C53d:D44d:E35d:F55r:H46r:I16r:P62d:Q14r:R41r:X13r"},
+    {level:"expert-35",
+     code:"A41r:B42d:D25r:E45d:F55d:G16r:K14d:O31d:P61d:Q24r:X13r"},
+    {level:"expert-36",
+     code:"A51r:B22d:C32r:D44d:E35d:F55r:G16r:O11d:P21r:Q62d:R14r:X33r"},
+    {level:"expert-37",
+     code:"A11r:B31d:C51r:D12r:E45d:F55r:G16r:H56r:O52d:P62d:Q13d:R24r:X23r"},
+    {level:"expert-38",
+     code:"A11d:B22r:C42d:D33d:E44r:F35d:G45r:O41r:Q46r:R63d:X13r"},
+    {level:"expert-39",
+     code:"A31d:B42d:C33d:D14r:E44r:F15d:G25d:H35r:I36r:O41r:R63d:X13r"},
+    {level:"expert-40",
+     code:"A21r:B51d:C22d:D32d:E44d:F35d:G55r:H16r:I46r:O11d:P62d:Q14r:X43r"},
 
-    prompt.start()
-    loop ()
-}
-
-function loop () {
-    print_board();
-    if (done()) {
-	console.log("CONGRATULATIONS");
-	return;
-    }
-    /// check if done
-    prompt.get(["piece", "delta"],function(err,result) {
-	if (piece_index(result.piece) > -1) {
-	    move_piece(result.piece,+result.delta);
-	    loop();
-	} else {
-	    if (result.piece.trim() === "#" ||
-		result.delta.trim() === "#") {
-		return;
-	    }
-	    if (result.piece.trim() === "?" ||
-		result.delta.trim() === "?") {
-		solve_puzzle();
-		return;
-	    }
-	    console.log("Unrecognized input");
-	    loop();
-	}
-    });
-}
+];
 
 function initialize_board () {
     
@@ -225,6 +284,7 @@ function done () {
     
 function place_piece (index,x,y,orientation) {
 
+    var pos;
     PIECES[index].position = y*6+x;
     PIECES[index].orientation = orientation;
     var step = orientation ? 6 : 1;
@@ -391,9 +451,6 @@ function move_piece (name,d) {
     }
 }
 
-var SAMPLE1 = "X23r:A24r:B25d:C36r:O43d:P64d";
-var SAMPLE2 = "A21d:B31r:C51d:D61d:E42d:F63d:I34r:H45d:X23r";
-
 function process_puzzle (descr) {
     descr.split(":").forEach(function(entry) {
 	if (entry.length == 4) {
@@ -492,5 +549,135 @@ function all_moves () {
     ///console.log(moves);
     return moves;
 }
+	    
 
-run();
+var Page = React.createClass({
+    componentWillMount: function() { 
+	initialize_board();
+	process_puzzle(GAMES[0].code);
+    },
+    render: function() {
+	return (
+	    <div>
+		<div className="title">
+		Traffic Jam!
+		</div>
+
+	        <Game />
+
+	        <GameMenu />
+            </div>
+	);
+    }
+});
+
+var GameMenu = React.createClass({
+    render: function() { 
+	return ( <div className="menu">
+                 <button>Hint</button>
+                 <button>Solve</button>
+                 <button>Quit</button>
+                 </div>);
+    }
+});
+
+var Game = React.createClass({
+    render: function () { 
+	var body = [<rect x="0" y="0" width="300" height="300" fill="none" stroke="#aaaaaa" />];
+	for (var i=1; i<6; i++) {
+	    body.push(<line x1={i*50} x2={i*50} y1="0" y2="300" stroke="#aaaaaa" />);
+	    body.push(<line y1={i*50} y2={i*50} x1="0" x2="300" stroke="#aaaaaa" />);
+	}
+	for (var i=0; i<PIECES.length; i++) { 
+	    if (PIECES[i].position > -1) {
+		body.push(svgForPiece(i));
+	    }
+	}
+	console.log(body);
+	return (
+		<div className="game">
+		<svg width="300" height="300" viewBox="0 0 300 300">
+		{body}
+                </svg>
+	        </div>
+	);
+    }
+});
+
+function svgForPiece (index) {
+    var p = PIECES[index];
+    if (p.position > -1) { 
+	var xy = xy_position(p.position);
+	var x = (xy[0]) * 50;
+	var y = (xy[1]) * 50;
+	if (p.orientation == 0) {
+	    var width = p.size * 50 - 4;
+	    var height = 50 - 4;
+	} else {
+	    var width = 50 - 4;
+	    var height = p.size * 50 - 4;
+	}
+	return <rect className="piece" x={x+2} y={y+2} width={width} height={height} fill={p.color} onMouseDown={selectElement} transform="matrix(1 0 0 1 0 0)" data-index={index} />;
+	    /* <text x={x+23} y={y+23} dy="0.35em" textAnchor="middle">{p.name}</text>]; */
+    }
+}
+
+
+var selectedElement;
+var index;
+var currentX;
+var currentY;
+var currentMatrix;
+
+function selectElement (evt) {
+    
+    /* required on firefox to prevent dragging the whole SVG */
+    if (evt.preventDefault) {
+	evt.preventDefault();
+    }
+
+    selectedElement = evt.target;
+    index = +selectedElement.getAttributeNS(null,"data-index");
+    currentX = evt.clientX;
+    currentY = evt.clientY;
+    currentMatrix = selectedElement.getAttributeNS(null, "transform").slice(7,-1).split(' ');
+
+    for (var i=0; i<currentMatrix.length; i++) {
+	currentMatrix[i] = parseFloat(currentMatrix[i]);
+    }
+    console.log("click");
+    selectedElement.addEventListener("mousemove",moveElement);
+    selectedElement.addEventListener("mouseout",deselectElement);
+    selectedElement.addEventListener("mouseup",deselectElement);
+
+}
+
+function moveElement (evt) { 
+    console.log("moving!");
+    var dx,dy;
+    if (PIECES[index].orientation == 0) {
+	dx = evt.clientX - currentX;
+	dy = 0;
+    } else {
+	dx = 0;
+	dy = evt.clientY - currentY;	
+    }
+    currentMatrix[4] += dx;
+    currentMatrix[5] += dy;
+    var newMatrix = "matrix(" + currentMatrix.join(' ') + ")";
+    selectedElement.setAttributeNS(null, "transform", newMatrix);
+    currentX = evt.clientX;
+    currentY = evt.clientY;
+}
+
+function deselectElement(evt){
+    if(selectedElement){
+	selectedElement.removeEventListener("mousemove",moveElement);
+	selectedElement.removeEventListener("mouseout",deselectElement);
+	selectedElement.removeEventListener("mouseup",deselectElement);
+	selectedElement = null;
+    }
+}
+
+ReactDOM.render(<Page />,document.getElementById("content"));
+

@@ -46,6 +46,11 @@ var BOARD = [
 ]
 
 
+/* position in [0,35]   
+   orientation = 0 -> r , 1 -> d
+   goal = true if piece is the X piece
+ */
+
 var PIECES = [
 
 
@@ -316,6 +321,7 @@ function done () {
     
 function place_piece (index,x,y,orientation) {
 
+    var pos;
     PIECES[index].position = y*6+x;
     PIECES[index].orientation = orientation;
     var step = orientation ? 6 : 1;

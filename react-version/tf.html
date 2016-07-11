@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Traffic Jam</title>
+    <script src="build/react.js"></script>
+    <script src="build/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+
+
+    <style>
+
+body { 
+  margin: 0px;
+  font-family: sans-serif;
+}
+
+.title {
+  font-size: 24pt;
+  color: red;
+  background-color: black;
+  padding: 20px;
+  text-align: center;
+}
+
+.piece:hover {
+  stroke: black;
+  stroke-width: 4px;
+}
+
+.piece { 
+  cursor: move;
+}
+
+.game { 
+  width: 100%;
+  margin-top: 50px;
+}
+
+.game svg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.menu {
+  width: 100%;
+  margin-top: 50px;
+}
+
+.menu button {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 30px;
+  width: 300px;
+  margin-bottom: 10px;
+}
+
+    </style>
+  </head>
+
+  <body>
+    <div id="content"></div>
+    <script type="text/babel" src="react-tf.js"></script>
+  </body>
+
+</html>
