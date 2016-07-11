@@ -617,7 +617,7 @@ function svgForPiece (index) {
 	    var width = 50 - 4;
 	    var height = p.size * 50 - 4;
 	}
-	return <rect className="piece" x={x+2} y={y+2} width={width} height={height} fill={p.color} onMouseDown={selectElement} transform="matrix(1 0 0 1 0 0)" data-index={index} />;
+	return <rect className="piece" x={x+2} y={y+2} width={width} height={height} fill={p.color} onMouseDown={selectElement} transform="matrix(1 0 0 1 0 0)" data-x={x} data-y={y} data-index={index} />;
 	    /* <text x={x+23} y={y+23} dy="0.35em" textAnchor="middle">{p.name}</text>]; */
     }
 }
@@ -625,9 +625,10 @@ function svgForPiece (index) {
 
 var selectedElement;
 var index;
-var currentX;
-var currentY;
+var currentX, currentY;
 var currentMatrix;
+var range;
+var minR, maxR;
 
 function selectElement (evt) {
     
@@ -640,7 +641,26 @@ function selectElement (evt) {
     index = +selectedElement.getAttributeNS(null,"data-index");
     currentX = evt.clientX;
     currentY = evt.clientY;
+    console.log("current = ",currentX,currentY);
     currentMatrix = selectedElement.getAttributeNS(null, "transform").slice(7,-1).split(' ');
+
+    var xy = xy_position(PIECES[index].position)
+    var x = xy[0];
+    var y = xy[1];
+    var deltaX = currentX - x*50;
+    var deltaY = currentY - y*50;
+    range = piece_range(index);
+    if (PIECES[index].orientation == 0) { 
+	/* R orientation only care about x position */
+	minR = currentX - 50*(x-range[0]);
+	maxR = currentX + 50*(range[1]-x);
+    } else {
+	minR = currentY - 50*(y-range[0]);
+	maxR = currentY + 50*(range[1]-y);
+    }
+
+    console.log("range = ",range);
+    console.log("min,max = ",minR,maxR);
 
     for (var i=0; i<currentMatrix.length; i++) {
 	currentMatrix[i] = parseFloat(currentMatrix[i]);
@@ -656,11 +676,19 @@ function moveElement (evt) {
     console.log("moving!");
     var dx,dy;
     if (PIECES[index].orientation == 0) {
-	dx = evt.clientX - currentX;
+	if (evt.clientX < minR || evt.clientX > maxR) {
+	    dx = 0;
+	} else {
+	    dx = evt.clientX - currentX;
+	}
 	dy = 0;
     } else {
 	dx = 0;
-	dy = evt.clientY - currentY;	
+	if (evt.clientY < minR || evt.clientY > maxR) { 
+	    dy = 0;
+	} else {
+	    dy = evt.clientY - currentY;	
+	}
     }
     currentMatrix[4] += dx;
     currentMatrix[5] += dy;
@@ -676,6 +704,8 @@ function deselectElement(evt){
 	selectedElement.removeEventListener("mouseout",deselectElement);
 	selectedElement.removeEventListener("mouseup",deselectElement);
 	selectedElement = null;
+	/* recompute the board */
+	/* re-render? */
     }
 }
 
