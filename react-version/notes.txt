@@ -1,0 +1,36 @@
+NOTES
+
+Drop React, keep bootstrap?
+
+1. GAME SCREEN:
+
++       +
+
+  GAME
+
++       +
+  Hint  
++       +
+  Solve
++       +
+  Quit
++       +
+
+
+2. STARTUP
+
++            +
+ Choose
+ level
++            +
+ Beginner
++            +
+ Intermediate
++            +
+ Difficult
++            +
+
+
+3. CHOOSE GAME
+
+< scroll >
