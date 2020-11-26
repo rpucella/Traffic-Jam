@@ -2,7 +2,7 @@
 
 *Traffic Jam* is an implementation of a physical board game sometimes called *Rush Hour*. 
 
-Honestly, this is just a testbed for me to explore new front-end technologies.
+Honestly, this is just a testbed for me to explore UI technologies. As such, the code is not only not maintained, but it probably does not even reflect best-practices for the UI tech under consideration.
 
 
 ## NodeJS version
@@ -17,7 +17,9 @@ To run, run *npm start*.
 
 ## React version
 
-A version of the game that runs in a browser, using Facebook's React UI framework. Currently under development. 
+A version of the game that runs in a browser, using Facebook's React UI framework. In progress. 
+
+Note that this uses an old version of React, and uses React as a loaded script in the HTML code - no bundling. 
 
 To run, just open `tf.html` with your browser.
 
